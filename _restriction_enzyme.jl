@@ -22,20 +22,19 @@ _DEGEN_NUC_TO_REGEX = Base.ImmutableDict(
     "N"=>"[A|C|T|G]")
 
 function new_Enzyme(name::String, pattern::String)
-    regex_pattern = pattern 
+    regex_pattern = pattern
     for (key, value) in _DEGEN_NUC_TO_REGEX
         regex_pattern = replace(regex_pattern, key => value)
     end
 
-    cut_site = findfirst("^", regex_pattern)[1]
+    cut_site = findfirst("^", regex_pattern)[1]-2
 
     regex_pattern = replace(regex_pattern, "^"=>"")
     regex_pattern = replace(regex_pattern, "_"=>"")
     
-
     function catalyze(sequence::String)
-        match_positions = vcat([1], [x.offset for x in eachmatch(Regex(regex_pattern), sequence)], length(sequence))
-        fragments = [(sequence[match_positions[i]:match_positions[i+1]]) for (i, value) in enumerate(1:length(match_positions)-1)]
+        match_positions = vcat([0], [x.offset + cut_site for x in eachmatch(Regex(regex_pattern), sequence)], length(sequence))
+        fragments = [(sequence[match_positions[i]+1:match_positions[i+1]]) for (i, value) in enumerate(1:length(match_positions)-1)]
         return fragments
     end
 
@@ -44,7 +43,10 @@ end
 
 EcoRI = new_Enzyme("EcoRI", "G^AATT_C")
 
-open(FASTA.Reader, "16S.fasta",) do reader
+full_genome = "GCA_940337035.1_PGI_AGRIOTES_LIN_V1_genomic.fna"
+test_seq = "16S.fasta"
+
+open(FASTA.Reader, test_seq,) do reader
     for record in reader
         slices = EcoRI.catalyze(String(FASTX.sequence(record)))
         for slice in slices
