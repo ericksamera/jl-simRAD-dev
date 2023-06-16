@@ -38,7 +38,7 @@ function new_Enzyme(name::String, pattern::String)
         return fragments
     end
 
-    return Enzyme(name, pattern, Regex(regex_pattern), cut_site, catalyze)
+    return Enzyme(name, pattern, Regex(regex_pattern, "i"), cut_site, catalyze)
 end
 
 EcoRI = new_Enzyme("EcoRI", "G^AATT_C")
