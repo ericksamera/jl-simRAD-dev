@@ -87,7 +87,7 @@ function main()
         println("Enzyme 2 is not recognized!")
     end
 
-    println(stderr, parsed_args["enzyme_1"], parsed_args["enzyme_2"])
+    println(stderr, "## ", parsed_args["enzyme_1"], "-",parsed_args["enzyme_2"])
     info = open(FASTA.Reader, parsed_args["genome_path"]) do reader
         total_genome_size = 0
         total_bases_covered = 0
