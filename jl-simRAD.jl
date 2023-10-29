@@ -26,7 +26,7 @@ function parse_commandline()
             arg_type = Int
             default = 600
 
-        "--pretty", "-p"
+        "--pretty"
             help = "minimize size of fragments"
             arg_type = Bool
             default = true
@@ -87,6 +87,7 @@ function main()
         println("Enzyme 2 is not recognized!")
     end
 
+    println(stderr, parsed_args["enzyme_1"], parsed_args["enzyme_2"])
     info = open(FASTA.Reader, parsed_args["genome_path"]) do reader
         total_genome_size = 0
         total_bases_covered = 0
