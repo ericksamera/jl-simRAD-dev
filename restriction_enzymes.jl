@@ -43,10 +43,7 @@ function catalyze(enzyme::Enzyme, input_fragments::Vector{RestrictionFragment})
     for fragment in input_fragments
         match_positions = [0; [x.offset + enzyme.cut_site for x in eachmatch(enzyme.regex_pattern, fragment.sequence)]; length(fragment.sequence)]
         for i in 1:length(match_positions)-1
-            start_i = match_positions[i] + 1
-            end_i = min(match_positions[i+1], length(fragment.sequence))
-            sequence = fragment.sequence[start_i:end_i]
-
+            sequence = fragment.sequence[match_positions[i]+1:match_positions[i+1]]
             left_end = i == 1 ? fragment.left_end : enzyme.name
             right_end = i == length(match_positions)-1 ? fragment.right_end : enzyme.name
             push!(output_fragments, RestrictionFragment(sequence, left_end, right_end))

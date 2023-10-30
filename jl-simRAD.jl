@@ -1,6 +1,4 @@
 using FASTX
-using Combinatorics
-using Random
 using ArgParse
 using Printf
 
@@ -62,12 +60,14 @@ function digest_sequence(sequence::String, enzyme1::Enzyme, enzyme2::Enzyme, min
         fragments_after_second_digest = catalyze(enzyme2, [fragment])
         
         for fragment2 in fragments_after_second_digest
+            if fragment2.left_end != fragment2.right_end
             len = length(fragment2.sequence)
             total_fragments += 1
 
-            if fragment2.left_end != fragment2.right_end && min_size < len < max_size
-                bases_covered += len
-                num_fragments_after_filter += 1
+                if min_size < len < max_size
+                    bases_covered += len
+                    num_fragments_after_filter += 1
+                end
             end
         end
     end
