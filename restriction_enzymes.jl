@@ -9,6 +9,9 @@ struct RestrictionFragment
     sequence::String
     left_end::String
     right_end::String
+    start_pos::Int
+    end_pos::Int
+    id::String
 end
 
 const _DEGEN_NUC_TO_REGEX = Base.ImmutableDict(
@@ -46,13 +49,16 @@ function catalyze(enzyme::Enzyme, input_fragments::Vector{RestrictionFragment})
             sequence = fragment.sequence[match_positions[i]+1:match_positions[i+1]]
             left_end = i == 1 ? fragment.left_end : enzyme.name
             right_end = i == length(match_positions)-1 ? fragment.right_end : enzyme.name
-            push!(output_fragments, RestrictionFragment(sequence, left_end, right_end))
+
+            start_pos = fragment.start_pos + match_positions[i]
+            end_pos = fragment.start_pos + match_positions[i+1] - 1
+
+            push!(output_fragments, RestrictionFragment(sequence, left_end, right_end, start_pos, end_pos, fragment.id))
         end
     end
 
     return output_fragments
 end
-
 function new_Enzyme(name::String, pattern::String)
     regex_pattern = convert_pattern(pattern)
     cut_site = findfirst("^", pattern).start - 2
